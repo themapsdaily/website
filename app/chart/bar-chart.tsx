@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { TrendingUp, TrendingDown, Download } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis, ResponsiveContainer } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+} from "recharts";
 import {
   Card,
   CardContent,
@@ -110,6 +117,7 @@ export default function BarChartComponent() {
             <BarChart data={sortedData} margin={{ top: 20 }}>
               <CartesianGrid vertical={false} />
               <XAxis dataKey="year" tickLine={false} axisLine={false} fontSize={10} />
+              <YAxis tickLine={false} axisLine={false} fontSize={10} />
               <ChartTooltip
                 cursor={false}
                 content={({ payload, label }) =>
@@ -121,17 +129,13 @@ export default function BarChartComponent() {
                   ) : null
                 }
               />
-              <Bar dataKey="total" fill="var(--color-desktop)" radius={8}>
-                <LabelList
-                  dataKey="total"
-                  position="top"
-                  offset={8}
-                  className="fill-black font-semibold text-xs"
-                  formatter={(value: number) =>
-                    value >= 1000 ? `${(value / 1000).toFixed(0)}K` : `${value}`
-                  }
-                />
-              </Bar>
+              <Bar dataKey="total" fill="url(#blueGradient)" radius={[4, 4, 0, 0]} />
+              <defs>
+                <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#60A5FA" />
+                  <stop offset="100%" stopColor="#1E3A8A" />
+                </linearGradient>
+              </defs>
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
