@@ -2,14 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TrendingUp, TrendingDown, Download } from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import {
   Card,
   CardContent,
@@ -17,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Combobox } from "./combobox";
 import html2canvas from "html2canvas";
 
@@ -27,7 +20,7 @@ type ChartFormattedData = { year: number; total: number };
 const chartConfig = {
   desktop: {
     label: "Desktop",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
 };
 
@@ -92,7 +85,7 @@ export default function BarChartComponent() {
   };
 
   return (
-    <Card id="chart-container" className="w-full max-w-5xl mx-auto p-4 rounded-xl">
+    <Card id="chart-container" className="w-full max-w-5xl mx-auto p-3 rounded-xl">
       <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <CardTitle className="text-xl font-semibold flex flex-wrap items-center gap-2">
           Year-Wise Trends
@@ -111,15 +104,23 @@ export default function BarChartComponent() {
         </button>
       </CardHeader>
 
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={sortedData} margin={{ top: 20 }}>
+      <CardContent className="px-2 pb-2 pt-0">
+        <ChartContainer config={chartConfig} className="aspect-auto h-[240px] w-full">
+          <ResponsiveContainer width="100%" height={240}>
+            <BarChart data={sortedData} margin={{ top: 10, left: 5, right: 2, bottom: -10 }}>
               <CartesianGrid vertical={false} />
               <XAxis dataKey="year" tickLine={false} axisLine={false} fontSize={10} />
-              <YAxis tickLine={false} axisLine={false} fontSize={10} />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                fontSize={10}
+                tickMargin={4}
+                width={28}
+                tickFormatter={(value: number) =>
+                  value >= 1000 ? `${(value / 1000).toFixed(0)}K` : `${value}`
+                }
+              />
               <ChartTooltip
-                cursor={false}
                 content={({ payload, label }) =>
                   payload?.length ? (
                     <div className="bg-white text-xs p-2 rounded shadow-sm">
@@ -129,13 +130,11 @@ export default function BarChartComponent() {
                   ) : null
                 }
               />
-              <Bar dataKey="total" fill="url(#blueGradient)" radius={[4, 4, 0, 0]} />
-              <defs>
-                <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#60A5FA" />
-                  <stop offset="100%" stopColor="#1E3A8A" />
-                </linearGradient>
-              </defs>
+              <Bar
+                dataKey="total"
+                fill="#3B82F6"
+                radius={[3, 3, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
@@ -145,8 +144,7 @@ export default function BarChartComponent() {
         <div className="flex items-center gap-1 font-medium">
           {percentageChange !== 0 ? (
             <>
-              Trending {percentageChange > 0 ? "up" : "down"} by{" "}
-              {Math.abs(percentageChange).toFixed(1)}% this year
+              Trending {percentageChange > 0 ? "up" : "down"} by {Math.abs(percentageChange).toFixed(1)}% this year
               {trendIcon}
             </>
           ) : (
