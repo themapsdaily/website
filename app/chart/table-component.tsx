@@ -143,7 +143,7 @@ export default function StateProductionTable() {
                         <TableHead className="w-[60px]">#</TableHead>
                         <TableHead>State</TableHead>
                         <TableHead className="w-[120px]">Trend (5 yrs)</TableHead>
-                        <TableHead className="text-right">Milk Production (in 000'Tonnes)</TableHead>
+                        <TableHead className="text-right">Milk Production (in Thousand Tonnes)</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
