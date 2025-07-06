@@ -28,13 +28,10 @@ type FormattedData = {
     total: number;
 };
 
-const ITEMS_PER_PAGE = 10;
-
 export default function StateProductionTable() {
     const [years, setYears] = useState<number[]>([]);
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
     const [allData, setAllData] = useState<FormattedData[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         async function fetchData() {
@@ -58,16 +55,20 @@ export default function StateProductionTable() {
         .filter((d) => d.year === selectedYear && d.feature !== "India")
         .sort((a, b) => b.total - a.total);
 
-    const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
-    const paginatedData = filteredData.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
-
     const getTrendData = (state: string) => {
         const trendData = allData
             .filter((d) => d.feature === state && d.year <= selectedYear! && d.year > selectedYear! - 5)
             .sort((a, b) => a.year - b.year);
 
         if (trendData.length === 0) {
-            return { trendData: [], minValue: 0, maxValue: 0, strokeColor: "#FACC15", fillColor: "rgba(250, 204, 21, 0.3)", showChart: false };
+            return {
+                trendData: [],
+                minValue: 0,
+                maxValue: 0,
+                strokeColor: "#FACC15",
+                fillColor: "rgba(250, 204, 21, 0.3)",
+                showChart: false,
+            };
         }
 
         const minValue = Math.min(...trendData.map((d) => d.total));
@@ -88,13 +89,20 @@ export default function StateProductionTable() {
             fillColor = "rgba(239, 68, 68, 0.3)";
         }
 
-        return { trendData, minValue: minValue - buffer, maxValue: maxValue + buffer, strokeColor, fillColor, showChart: true };
+        return {
+            trendData,
+            minValue: minValue - buffer,
+            maxValue: maxValue + buffer,
+            strokeColor,
+            fillColor,
+            showChart: true,
+        };
     };
 
     const downloadCSV = () => {
         const csvContent = [
             "State,Year,Milk Production",
-            ...allData.map(({ feature, year, total }) => `${feature},${year},${total}`)
+            ...allData.map(({ feature, year, total }) => `${feature},${year},${total}`),
         ].join("\n");
 
         const blob = new Blob([csvContent], { type: "text/csv" });
@@ -104,22 +112,10 @@ export default function StateProductionTable() {
         link.click();
     };
 
-    const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
-
-    const handlePreviousPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
-
     return (
-        <div className="w-full max-w-5xl mx-auto border border-border rounded-lg shadow-sm bg-background p-2 md:p-4 overflow-x-auto">
+        <div className="w-full max-w-5xl mx-auto">
             <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                <h2 className="text-xl md:text-2xl font-bold">State-Wise Production</h2>
+                <h2 className="text-base md:text-lg font-bold">State-Wise Production</h2>
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                     <Combobox
                         options={years.map((year) => ({ value: String(year), label: String(year) }))}
@@ -128,77 +124,68 @@ export default function StateProductionTable() {
                     />
                     <Button
                         onClick={downloadCSV}
-                        className="p-2 text-sm md:text-base bg-blue-500 text-white rounded-md hover:bg-blue-600 flex items-center gap-2"
+                        className="p-2 text-xs md:text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 flex items-center gap-2"
                     >
                         <Download className="h-4 w-4 md:h-5 md:w-5" />
-                        <span>Download CSV</span>
+                        <span>CSV</span>
                     </Button>
                 </div>
             </div>
-            <Table className="text-xs md:text-sm">
-                <TableCaption>Milk production trends for different states.</TableCaption>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead className="w-[50px]">#</TableHead>
-                        <TableHead>State</TableHead>
-                        <TableHead className="w-[100px]">Trend (5 yrs)</TableHead>
-                        <TableHead className="text-right">Milk Production (in Thousand Tonnes)</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {paginatedData.map((item, index) => {
-                        const { trendData, minValue, maxValue, strokeColor, fillColor, showChart } = getTrendData(item.feature);
-                        const safeId = `grad-${item.feature.replace(/\s+/g, "_")}`;
 
-                        return (
-                            <TableRow key={item.feature}>
-                                <TableCell className="font-medium">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</TableCell>
-                                <TableCell className="text-sm md:text-base font-semibold">{item.feature}</TableCell>
-                                <TableCell>
-                                    {showChart ? (
-                                        <ResponsiveContainer width="100%" height={40}>
-                                            <AreaChart data={trendData}>
-                                                <defs>
-                                                    <linearGradient id={safeId} x1="0" x2="0" y1="0" y2="1">
-                                                        <stop offset="10%" stopColor={fillColor} stopOpacity={0.7} />
-                                                        <stop offset="90%" stopColor={fillColor} stopOpacity={0.2} />
-                                                    </linearGradient>
-                                                </defs>
-                                                <XAxis dataKey="year" hide />
-                                                <YAxis domain={[minValue, maxValue]} hide />
-                                                <Area type="monotone" dataKey="total" stroke={strokeColor} strokeWidth={2} fill={`url(#${safeId})`} />
-                                            </AreaChart>
-                                        </ResponsiveContainer>
-                                    ) : (
-                                        <span className="text-xs text-muted-foreground">No Data</span>
-                                    )}
-                                </TableCell>
-                                <TableCell className="text-right font-semibold text-sm md:text-base">{item.total.toLocaleString()}</TableCell>
-                            </TableRow>
-                        );
-                    })}
-                </TableBody>
-            </Table>
+            {/* ✅ Table only below */}
+            <div className="border border-border rounded-lg shadow-sm bg-background p-2 md:p-4 overflow-x-auto">
+                <Table className="text-[10px] md:text-xs">
+                    <TableCaption>Milk production trends for different states.</TableCaption>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-[40px]">#</TableHead>
+                            <TableHead>State</TableHead>
+                            <TableHead className="w-[100px]">Trend (5 yrs)</TableHead>
+                            <TableHead className="text-right">Milk Production (in Thousand Tonnes)</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {filteredData.map((item, index) => {
+                            const { trendData, minValue, maxValue, strokeColor, fillColor, showChart } = getTrendData(item.feature);
+                            const safeId = `grad-${item.feature.replace(/\s+/g, "_")}`;
 
-            {/* ✅ Pagination Controls */}
-            <div className="mt-4 flex justify-between items-center text-sm md:text-base">
-                <Button
-                    variant="outline"
-                    onClick={handlePreviousPage}
-                    disabled={currentPage === 1}
-                >
-                    Previous
-                </Button>
-                <span className="text-xs md:text-sm text-muted-foreground">
-                    Page {currentPage} of {totalPages}
-                </span>
-                <Button
-                    variant="outline"
-                    onClick={handleNextPage}
-                    disabled={currentPage === totalPages}
-                >
-                    Next
-                </Button>
+                            return (
+                                <TableRow key={item.feature}>
+                                    <TableCell className="font-medium">{index + 1}</TableCell>
+                                    <TableCell className="text-xs md:text-sm font-semibold">{item.feature}</TableCell>
+                                    <TableCell>
+                                        {showChart ? (
+                                            <ResponsiveContainer width="100%" height={40}>
+                                                <AreaChart data={trendData}>
+                                                    <defs>
+                                                        <linearGradient id={safeId} x1="0" x2="0" y1="0" y2="1">
+                                                            <stop offset="10%" stopColor={fillColor} stopOpacity={0.7} />
+                                                            <stop offset="90%" stopColor={fillColor} stopOpacity={0.2} />
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <XAxis dataKey="year" hide />
+                                                    <YAxis domain={[minValue, maxValue]} hide />
+                                                    <Area
+                                                        type="monotone"
+                                                        dataKey="total"
+                                                        stroke={strokeColor}
+                                                        strokeWidth={2}
+                                                        fill={`url(#${safeId})`}
+                                                    />
+                                                </AreaChart>
+                                            </ResponsiveContainer>
+                                        ) : (
+                                            <span className="text-[10px] text-muted-foreground">No Data</span>
+                                        )}
+                                    </TableCell>
+                                    <TableCell className="text-right font-semibold text-xs md:text-sm">
+                                        {item.total.toLocaleString()}
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
+                    </TableBody>
+                </Table>
             </div>
         </div>
     );
