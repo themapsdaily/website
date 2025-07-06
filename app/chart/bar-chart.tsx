@@ -3,13 +3,7 @@
 import { useEffect, useState } from "react";
 import { TrendingUp, TrendingDown, Download } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { Combobox } from "./combobox";
 import html2canvas from "html2canvas";
@@ -85,12 +79,10 @@ export default function BarChartComponent() {
   };
 
   return (
-    <Card className="w-full max-w-5xl mx-auto p-3 rounded-xl">
-      <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-        <CardTitle className="text-xl font-semibold flex flex-wrap items-center gap-2">
-          Year-Wise Trends
-        </CardTitle>
-        <div className="flex items-center gap-2">
+    <div className="w-full max-w-5xl mx-auto">
+      <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+        <h2 className="text-base md:text-lg font-bold">Year-Wise Trends</h2>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           <Combobox
             options={features.map((f) => ({ value: f, label: f }))}
             selected={selectedFeature}
@@ -98,18 +90,18 @@ export default function BarChartComponent() {
           />
           <button
             onClick={downloadChartAsPNG}
-            className="text-sm px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-1"
+            className="p-2 text-xs md:text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 flex items-center gap-2"
           >
-            <Download className="h-4 w-4" />
-            PNG
+            <Download className="h-4 w-4 md:h-5 md:w-5" />
+            <span>PNG</span>
           </button>
         </div>
-      </CardHeader>
+      </div>
 
-      <CardContent className="px-2 pb-2 pt-0">
-        <div id="chart-container">
-          <ChartContainer config={chartConfig} className="aspect-auto h-[240px] w-full">
-            <ResponsiveContainer width="100%" height={240}>
+      <Card className="w-full h-[360px] p-3 rounded-xl" id="chart-container">
+        <CardContent className="px-2 pb-2 pt-0 h-full">
+          <ChartContainer config={chartConfig} className="h-full w-full">
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart data={sortedData} margin={{ top: 10, left: 5, right: 2, bottom: -10 }}>
                 <CartesianGrid vertical={false} />
                 <XAxis dataKey="year" tickLine={false} axisLine={false} fontSize={10} />
@@ -125,27 +117,23 @@ export default function BarChartComponent() {
                 />
                 <ChartTooltip
                   content={({ payload, label }) =>
-                    payload?.length ? (
+                    payload?.length && payload[0]?.value !== undefined ? (
                       <div className="bg-white text-xs p-2 rounded shadow-sm">
                         <div>Year: {label}</div>
-                        <div>Total: {payload[0].value}</div>
+                        <div>Total: {payload[0].value.toLocaleString()}</div>
                       </div>
                     ) : null
                   }
                 />
-                <Bar
-                  dataKey="total"
-                  fill="#3B82F6"
-                  radius={[3, 3, 0, 0]}
-                />
+                <Bar dataKey="total" fill="#3B82F6" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
-        </div>
-      </CardContent>
+        </CardContent>
+      </Card>
 
-      <CardFooter className="text-sm flex-col items-start gap-1">
-        <div className="flex items-center gap-1 font-medium">
+      <div className="text-sm flex-col items-start gap-1 mt-3 px-1">
+        <div className="min-h-[32px] flex items-center gap-1 font-medium">
           {percentageChange !== 0 ? (
             <>
               Trending {percentageChange > 0 ? "up" : "down"} by {Math.abs(percentageChange).toFixed(1)}% this year
@@ -156,7 +144,7 @@ export default function BarChartComponent() {
           )}
         </div>
         <div className="text-muted-foreground">Values in Thousand Tonnes</div>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }
