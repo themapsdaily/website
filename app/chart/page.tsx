@@ -23,7 +23,7 @@ export default function ChartPage() {
                             Milk Production
                         </h1>
                         <p className="max-w-2xl text-base font-light text-foreground sm:text-lg">
-                            India is the world's largest milk producer, contributing approximately 24% of global milk production. 
+                            India is the largest milk producer, contributing approximately 24% of global milk production. 
                             In 2022-23, India produced around 230.58 million tonnes of milk, with Uttar Pradesh being the top milk-producing state. 
                             The Indian dairy sector has seen significant growth in the past decade, with a 63.56% increase in milk production between 2014-15 and 2023-24.
                         </p>
