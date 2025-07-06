@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgres://avnadmin:AVNS_jVUjROP6dGwEzt86JQy@themapsdaily-themapsdaily-2cc3.a.aivencloud.com:19178/india_states?sslmode=require"
+}
+
+model Account {
+  id                String  @id
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  User              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model User {
+  id            String    @id
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  Account       Account[]
+  Session       Session[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model theme_attributes {
+  theme_id       String  @id
+  theme          String
+  theme_category String
+  unit           String?
+  source_id      String
+}
+
+model time_based_metrics {
+  year         Float
+  theme_id     String
+  gender       String?
+  residence    String?
+  age_group    String?
+  feature      String
+  feature_type String
+  total        Float
+  id           Int     @id @default(autoincrement())
+}
