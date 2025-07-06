@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { Combobox } from "./combobox";
 import html2canvas from "html2canvas";
 
@@ -85,59 +85,63 @@ export default function BarChartComponent() {
   };
 
   return (
-    <Card id="chart-container" className="w-full max-w-5xl mx-auto p-3 rounded-xl">
+    <Card className="w-full max-w-5xl mx-auto p-3 rounded-xl">
       <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <CardTitle className="text-xl font-semibold flex flex-wrap items-center gap-2">
           Year-Wise Trends
+        </CardTitle>
+        <div className="flex items-center gap-2">
           <Combobox
             options={features.map((f) => ({ value: f, label: f }))}
             selected={selectedFeature}
             onChange={setSelectedFeature}
           />
-        </CardTitle>
-        <button
-          onClick={downloadChartAsPNG}
-          className="text-sm px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-1"
-        >
-          <Download className="h-4 w-4" />
-          PNG
-        </button>
+          <button
+            onClick={downloadChartAsPNG}
+            className="text-sm px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-1"
+          >
+            <Download className="h-4 w-4" />
+            PNG
+          </button>
+        </div>
       </CardHeader>
 
       <CardContent className="px-2 pb-2 pt-0">
-        <ChartContainer config={chartConfig} className="aspect-auto h-[240px] w-full">
-          <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={sortedData} margin={{ top: 10, left: 5, right: 2, bottom: -10 }}>
-              <CartesianGrid vertical={false} />
-              <XAxis dataKey="year" tickLine={false} axisLine={false} fontSize={10} />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                fontSize={10}
-                tickMargin={4}
-                width={28}
-                tickFormatter={(value: number) =>
-                  value >= 1000 ? `${(value / 1000).toFixed(0)}K` : `${value}`
-                }
-              />
-              <ChartTooltip
-                content={({ payload, label }) =>
-                  payload?.length ? (
-                    <div className="bg-white text-xs p-2 rounded shadow-sm">
-                      <div>Year: {label}</div>
-                      <div>Total: {payload[0].value}</div>
-                    </div>
-                  ) : null
-                }
-              />
-              <Bar
-                dataKey="total"
-                fill="#3B82F6"
-                radius={[3, 3, 0, 0]}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartContainer>
+        <div id="chart-container">
+          <ChartContainer config={chartConfig} className="aspect-auto h-[240px] w-full">
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={sortedData} margin={{ top: 10, left: 5, right: 2, bottom: -10 }}>
+                <CartesianGrid vertical={false} />
+                <XAxis dataKey="year" tickLine={false} axisLine={false} fontSize={10} />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  fontSize={10}
+                  tickMargin={4}
+                  width={28}
+                  tickFormatter={(value: number) =>
+                    value >= 1000 ? `${(value / 1000).toFixed(0)}K` : `${value}`
+                  }
+                />
+                <ChartTooltip
+                  content={({ payload, label }) =>
+                    payload?.length ? (
+                      <div className="bg-white text-xs p-2 rounded shadow-sm">
+                        <div>Year: {label}</div>
+                        <div>Total: {payload[0].value}</div>
+                      </div>
+                    ) : null
+                  }
+                />
+                <Bar
+                  dataKey="total"
+                  fill="#3B82F6"
+                  radius={[3, 3, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </div>
       </CardContent>
 
       <CardFooter className="text-sm flex-col items-start gap-1">
