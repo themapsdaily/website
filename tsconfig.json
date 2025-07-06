@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "ES2017", // Target ES2017 for modern JavaScript features
+    "lib": ["dom", "dom.iterable", "esnext"], // Include DOM and ESNext libraries
+    "allowJs": true, // Allow JavaScript files to be compiled
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "strict": true, // Enable all strict type-checking options
+    "noEmit": true, // Do not emit JavaScript files (Next.js handles this)
+    "esModuleInterop": true, // Enable ES module interop
+    "module": "esnext", // Use ES modules
+    "moduleResolution": "bundler", // Use the bundler resolution strategy
+    "noUnusedLocals": false, // Disable unused local variable checks
+    "noUnusedParameters": false, // Disable unused parameter checks
+    "resolveJsonModule": true, // Allow importing JSON files
+    "isolatedModules": true, // Ensure each file can be transpiled independently
+    "jsx": "preserve", // Preserve JSX syntax (Next.js handles transpilation)
+    "incremental": true, // Enable incremental compilation
+    "plugins": [
+      {
+        "name": "next" // Use the Next.js TypeScript plugin
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"] // Map '@/*' to the root directory
+    },
+    "typeRoots": ["./node_modules/@types"], // Specify where to find type definitions
+    "types": ["node", "estree", "json-schema"] // Include global type definitions
+  },
+  "include": [
+    "next-env.d.ts", // Include Next.js type definitions
+    "**/*.ts", // Include all TypeScript files
+    "**/*.tsx", // Include all TypeScript JSX files
+    ".next/types/**/*.ts" // Include Next.js generated types
+  ],
+  "exclude": [
+    "node_modules", // Exclude node_modules
+    "**/node_modules/*", // Exclude nested node_modules
+    "dist" // Exclude the dist directory (if it exists)
+  ]
+}
