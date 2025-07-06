@@ -3,7 +3,7 @@
 import Link from "next/link";
 import BarChartComponent from "./bar-chart";
 import TableComponent from "./table-component";
-#import ChoroplethMap from "./choropleth-map"; // ✅ Import ChoroplethMap
+//import ChoroplethMap from "./choropleth-map"; // ✅ Import ChoroplethMap
 
 export default function ChartPage() {
     return (
