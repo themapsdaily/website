@@ -17,13 +17,15 @@ export default function ChartPage() {
                             href="/docs/tailwind-v4"
                             className="group mb-2 inline-flex items-center gap-2 px-0.5 text-sm font-medium"
                         >
-                            <span className="underline-offset-4 group-hover:underline">Learn More About Data Analytics</span>
+                            <span className="underline-offset-4 group-hover:underline">The Maps Daily | Agriculture</span>
                         </Link>
                         <h1 className="text-2xl font-bold leading-tight tracking-tighter sm:text-3xl md:text-4xl lg:leading-[1.1]">
-                            Interactive Data Dashboard
+                            Milk Production
                         </h1>
                         <p className="max-w-2xl text-base font-light text-foreground sm:text-lg">
-                            Visualizing trends with dynamic charts and real-time data insights. Stay informed with interactive analytics.
+                            India is the world's largest milk producer, contributing approximately 24% of global milk production. 
+                            In 2022-23, India produced around 230.58 million tonnes of milk, with Uttar Pradesh being the top milk-producing state. 
+                            The Indian dairy sector has seen significant growth in the past decade, with a 63.56% increase in milk production between 2014-15 and 2023-24.
                         </p>
                     </div>
                 </div>
